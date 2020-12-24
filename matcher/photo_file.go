@@ -5,12 +5,15 @@ import (
   "log"
   "os"
   "regexp"
+  "time"
+  "strings"
 )
 
 type PhotoFile struct {
   // https://stackoverflow.com/questions/24216510/empty-or-not-required-struct-fields-in-golang
 
   DateString string
+  Date time.Time
   RawFilenameString string
 
   Path string
@@ -18,11 +21,16 @@ type PhotoFile struct {
 }
 
 func NewPhotoFile(path string, fileInfo os.FileInfo) PhotoFile {
+  dateString := processDateFromPath(path)
+  filenameString := processRawFilenameFromPath(path)
+  date := processDate(dateString)
+
   return PhotoFile {
     Path: path,
     FileInfo: fileInfo,
-    DateString: processDateFromPath(path),
-    RawFilenameString: processRawFilenameFromPath(path) }
+    DateString: dateString,
+    Date: date,
+    RawFilenameString: filenameString }
 }
 
 // use date stored in path
@@ -58,6 +66,19 @@ func processRawFilenameFromPath(path string) string {
   }
 
   return ""
+}
+
+func processDate(dateString string) time.Time {
+  layout := "2006_01_02"
+  normalizedDateString := strings.ReplaceAll(dateString, "-", "_")
+
+  t, err := time.Parse(layout, normalizedDateString)
+
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  return t
 }
 
 func dateRegexp() *regexp.Regexp {
