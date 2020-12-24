@@ -8,7 +8,11 @@ import (
   "time"
   "strings"
   "math"
+  "path"
 )
+
+const MaxHourOffset = 96.0
+const RawSubdir = "raw"
 
 type PhotoFile struct {
   // https://stackoverflow.com/questions/24216510/empty-or-not-required-struct-fields-in-golang
@@ -21,7 +25,20 @@ type PhotoFile struct {
   FileInfo os.FileInfo
 }
 
-func (pf PhotoFile) dateName() string {
+func (pf PhotoFile) DirPath() string {
+  return path.Dir(pf.Path)
+}
+
+func (pf PhotoFile) DirRawPath() string {
+  return path.Join(pf.DirPath(), RawSubdir)
+}
+
+// w/o extension
+func (pf PhotoFile) FilenameRawPath() string {
+  return path.Join(pf.DirRawPath(), pf.Filename)
+}
+
+func (pf PhotoFile) DateName() string {
   return fmt.Sprint(pf.DateString, ":", pf.Filename)
 }
 
@@ -31,14 +48,14 @@ func (pf PhotoFile) equal(other PhotoFile) bool {
   }
 
   timeDiff := pf.Date.Sub(other.Date)
-  result := math.Abs(timeDiff.Hours()) < 96.0
+  result := math.Abs(timeDiff.Hours()) < MaxHourOffset
 
   log.Print(
     fmt.Sprint(
       "  ",
-      pf.dateName(),
+      pf.DateName(),
       " - ",
-      other.dateName(),
+      other.DateName(),
       " timeDiff ",
       timeDiff,
       " result ",
