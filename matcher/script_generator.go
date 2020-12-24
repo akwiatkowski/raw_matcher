@@ -15,7 +15,7 @@ type ScriptGenerator struct {
 func NewScriptGenerator(params *MatcherParams) *ScriptGenerator {
   log.Print("ScriptGenerator start")
 
-  file, err := os.Create(params.ScriptName)
+  file, err := os.Create(params.OutputScriptName)
   logError(err)
 
   return &ScriptGenerator {
@@ -43,11 +43,11 @@ func (sg ScriptGenerator) GenerateForMatched(photo_raws [][2]PhotoFile) {
     photo := photo_raw[0]
     raw := photo_raw[1]
 
-    line := fmt.Sprint("# ", i, " matched \n")
+    line := fmt.Sprint("# ", i+1, " matched \n")
     _, err = writer.WriteString(line)
     logError(err)
 
-    line = fmt.Sprint("cp -n\"", raw.Path, "\" \"", photo.DirRawPath(), "\" \n")
+    line = fmt.Sprint("cp -n \"", raw.Path, "\" \"", photo.DirRawPath(), "\" \n")
     _, err = writer.WriteString(line)
     logError(err)
   }

@@ -8,4 +8,10 @@ multiple of TB of data and I wanted to learn Go language.
 
 ## How to use
 
-It's not ready yet.
+```
+go run bin/raw_matcher.go -path ./data -output copy_script.sh
+```
+
+# Links, notes
+
+https://blog.alexellis.io/5-keys-to-a-killer-go-cli/
