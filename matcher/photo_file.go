@@ -35,7 +35,7 @@ func (pf PhotoFile) DirPath() string {
 }
 
 func (pf PhotoFile) DirRawPath() string {
-  return path.Join(pf.DirPath(), RawSubdir)
+  return path.Join(pf.DirPath(), RawSubdir) + "/"
 }
 
 // w/o extension

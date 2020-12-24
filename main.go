@@ -12,7 +12,8 @@ func main() {
 
   params := &matcher.MatcherParams{
     PhotosPath: "data/photos",
-    RawsPath: "data/raws" }
+    RawsPath: "data/raws",
+    ScriptName: "script.sh" }
 
   instance := matcher.New(params)
   instance.Match()

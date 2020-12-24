@@ -10,6 +10,10 @@ type Matcher struct {
 
   FileList *FileList
   ScriptGenerator *ScriptGenerator
+
+  MatchedPhotos [][2]PhotoFile
+  NotFoundPhotos []PhotoFile
+  RawExistPhotos []PhotoFile
 }
 
 func New(params *MatcherParams) *Matcher {
@@ -30,7 +34,7 @@ func (matcher Matcher) Match() {
 
     if rawExist {
       // add photo to `ExistRawPhotos`
-      matcher.ScriptGenerator.addToRawExist(photo)
+      matcher.RawExistPhotos = append(matcher.RawExistPhotos, photo)
 
       log.Print(fmt.Sprint(photo.DateName(), " has raw"))
     } else {
@@ -39,12 +43,15 @@ func (matcher Matcher) Match() {
 
       if matchedRaw == nil {
         // RAW not found
-        matcher.ScriptGenerator.addToNotFound(photo)
+        matcher.NotFoundPhotos = append(matcher.NotFoundPhotos, photo)
 
         log.Print(fmt.Sprint(photo.DateName(), " NOT found"))
       } else {
-        // RAW not found
-        matcher.ScriptGenerator.addToMatched(photo, *matchedRaw)
+        // raw Found
+        var row [2]PhotoFile
+        row[0] = photo
+        row[1] = *matchedRaw
+        matcher.MatchedPhotos = append(matcher.MatchedPhotos, row)
 
         log.Print(fmt.Sprint(photo.DateName(), " found RAW: ", matchedRaw.DateName()))
       }
@@ -53,5 +60,9 @@ func (matcher Matcher) Match() {
 
   log.Print("End matching")
 
-  matcher.ScriptGenerator.Run()
+  matcher.ScriptGenerator.GenerateForMatched(matcher.MatchedPhotos)
+  matcher.ScriptGenerator.GenerateForNotFound(matcher.NotFoundPhotos)
+  matcher.ScriptGenerator.GenerateForRawExist(matcher.RawExistPhotos)
+
+  matcher.ScriptGenerator.Close()
 }
