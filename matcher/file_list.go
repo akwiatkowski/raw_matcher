@@ -47,8 +47,6 @@ func scanPhotoFiles(rxp *regexp.Regexp, path string) []PhotoFile {
       log.Fatal(e)
   }
 
-  fmt.Println(photoFiles)
-
   return photoFiles
 }
 

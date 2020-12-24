@@ -1,19 +1,20 @@
 package main
 
 import (
+  "log"
   "fmt"
 
   "raw_matcher/matcher"
 )
 
 func main() {
-  fmt.Println("test")
+  log.Print("Start")
 
   params := &matcher.MatcherParams{
     PhotosPath: "data/photos",
     RawsPath: "data/raws" }
 
   instance := matcher.New(params)
-  fmt.Println(instance)
-  fmt.Println(instance.FileList.Photos)
+  log.Print(fmt.Sprint("instance ", instance))
+  // fmt.Println(instance.FileList.Photos)
 }
