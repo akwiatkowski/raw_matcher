@@ -15,6 +15,8 @@ func main() {
     RawsPath: "data/raws" }
 
   instance := matcher.New(params)
-  log.Print(fmt.Sprint("instance ", instance))
+  instance.Match()
+
+  fmt.Println("done")
   // fmt.Println(instance.FileList.Photos)
 }

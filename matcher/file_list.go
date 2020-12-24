@@ -15,6 +15,17 @@ type FileList struct {
   Raws []PhotoFile
 }
 
+func (fl FileList) MatchRawForPhoto(photo PhotoFile) *PhotoFile {
+  for i, raw := range fl.Raws {
+    _ = i
+    if photo.RawFilenameString == raw.RawFilenameString {
+      return &raw
+    }
+  }
+
+  return nil
+}
+
 func jpegRegexp() *regexp.Regexp {
   r, e := regexp.Compile("(?i)^.+\\.(jpg|jpeg)$")
   if e != nil {
