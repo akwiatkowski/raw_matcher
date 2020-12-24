@@ -9,11 +9,13 @@ type Matcher struct {
   params *MatcherParams
 
   FileList *FileList
+  ScriptGenerator *ScriptGenerator
 }
 
 func New(params *MatcherParams) *Matcher {
   return &Matcher {
     FileList: NewFileList(params),
+    ScriptGenerator: NewScriptGenerator(params),
     params: params }
 }
 
@@ -22,17 +24,34 @@ func (matcher Matcher) Match() {
 
   for i, photo := range matcher.FileList.Photos {
     _ = i
-    result := matcher.FileList.MatchRawForPhoto(photo)
-    if result == nil {
-      log.Print(fmt.Sprint(" not found for ", photo.DateName()))
-    } else {
-      // assign
-      // photo.AssignedRaw = result
-      log.Print(fmt.Sprint(" found ", photo.DateName(), " -> ", result.DateName()))
 
-      //log.Print(fmt.Sprint("cp ", result.Path, " ", photo.DirRawPath() ))
+    // check if RAW exists
+    rawExist, _ := photo.RawFileExists()
+
+    if rawExist {
+      // add photo to `ExistRawPhotos`
+      matcher.ScriptGenerator.addToRawExist(photo)
+
+      log.Print(fmt.Sprint(photo.DateName(), " has raw"))
+    } else {
+      // search for best RAW
+      matchedRaw := matcher.FileList.MatchRawForPhoto(photo)
+
+      if matchedRaw == nil {
+        // RAW not found
+        matcher.ScriptGenerator.addToNotFound(photo)
+
+        log.Print(fmt.Sprint(photo.DateName(), " NOT found"))
+      } else {
+        // RAW not found
+        matcher.ScriptGenerator.addToMatched(photo, *matchedRaw)
+
+        log.Print(fmt.Sprint(photo.DateName(), " found RAW: ", matchedRaw.DateName()))
+      }
     }
   }
 
   log.Print("End matching")
+
+  matcher.ScriptGenerator.Run()
 }

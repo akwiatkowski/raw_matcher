@@ -27,7 +27,7 @@ type PhotoFile struct {
 
   // maybe if I convert into pointer/reference that could work`
   // but I won't do that now
-  AssignedRaw *PhotoFile
+  // AssignedRaw *PhotoFile
 }
 
 func (pf PhotoFile) DirPath() string {
