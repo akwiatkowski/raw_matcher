@@ -9,6 +9,7 @@ import (
   "strings"
   "math"
   "path"
+  "path/filepath"
 )
 
 const MaxHourOffset = 96.0
@@ -23,6 +24,10 @@ type PhotoFile struct {
 
   Path string
   FileInfo os.FileInfo
+
+  // maybe if I convert into pointer/reference that could work`
+  // but I won't do that now
+  AssignedRaw *PhotoFile
 }
 
 func (pf PhotoFile) DirPath() string {
@@ -36,6 +41,14 @@ func (pf PhotoFile) DirRawPath() string {
 // w/o extension
 func (pf PhotoFile) FilenameRawPath() string {
   return path.Join(pf.DirRawPath(), pf.Filename)
+}
+
+func (pf PhotoFile) RawFileExists() (bool, error) {
+  matches, err := filepath.Glob(pf.FilenameRawPath() + ".*")
+  if err != nil {
+    return false, err
+  }
+  return len(matches) > 0, nil
 }
 
 func (pf PhotoFile) DateName() string {

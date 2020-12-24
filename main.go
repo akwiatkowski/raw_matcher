@@ -16,6 +16,7 @@ func main() {
 
   instance := matcher.New(params)
   instance.Match()
+  instance.GenerateCopyScript()
 
   fmt.Println("done")
   // fmt.Println(instance.FileList.Photos)

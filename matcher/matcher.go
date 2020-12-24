@@ -26,8 +26,11 @@ func (matcher Matcher) Match() {
     if result == nil {
       log.Print(fmt.Sprint(" not found for ", photo.DateName()))
     } else {
+      // assign
+      // photo.AssignedRaw = result
       log.Print(fmt.Sprint(" found ", photo.DateName(), " -> ", result.DateName()))
-      log.Print(fmt.Sprint("cp ", result.Path, " ", photo.DirRawPath() ))
+
+      //log.Print(fmt.Sprint("cp ", result.Path, " ", photo.DirRawPath() ))
     }
   }
 
