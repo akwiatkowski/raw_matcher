@@ -9,7 +9,11 @@ import (
 func main() {
   fmt.Println("test")
 
-  instance := matcher.New()
+  params := &matcher.MatcherParams{
+    PhotosPath: "data/photos",
+    RawsPath: "data/raws" }
+
+  instance := matcher.New(params)
   fmt.Println(instance)
   fmt.Println(instance.FileList.Photos)
 }

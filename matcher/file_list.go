@@ -8,19 +8,15 @@ import (
   "os"
 )
 
-type PhotoFile struct {
-  Path string
-  FileInfo os.FileInfo
-}
-
 type FileList struct {
+  params *MatcherParams
+
   Photos []PhotoFile
   Raws []PhotoFile
 }
 
-
 func jpegRegexp() *regexp.Regexp {
-  r, e := regexp.Compile("^.+\\.(jpg|jpeg)$")
+  r, e := regexp.Compile("(?i)^.+\\.(jpg|jpeg)$")
   if e != nil {
       log.Fatal(e)
   }
@@ -28,7 +24,8 @@ func jpegRegexp() *regexp.Regexp {
 }
 
 func rawRegexp() *regexp.Regexp {
-  r, e := regexp.Compile("^.+\\.(dng|pef|arw)$")
+  // https://stackoverflow.com/questions/15326421/how-do-i-do-a-case-insensitive-regular-expression-in-go
+  r, e := regexp.Compile("(?i)^.+\\.(dng|pef|arw)$")
   if e != nil {
       log.Fatal(e)
   }
@@ -40,16 +37,10 @@ func scanPhotoFiles(rxp *regexp.Regexp, path string) []PhotoFile {
 
   e := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
     if err == nil && rxp.MatchString(info.Name()) {
-      fmt.Println(info.Name())
-      // fmt.Println(info)
+      // fmt.Println(info.Name())
 
-      var photo PhotoFile
-      photo.Path = path
-      photo.FileInfo = info
-
-      photoFiles = append(photoFiles, photo)
+      photoFiles = append(photoFiles, NewPhotoFile(path, info))
     }
-    // fmt.Println(path)
     return nil
   })
   if e != nil {
@@ -61,15 +52,25 @@ func scanPhotoFiles(rxp *regexp.Regexp, path string) []PhotoFile {
   return photoFiles
 }
 
-func scanPhotos() {
-
+func scanPhotos(photosPath string) []PhotoFile {
+  log.Print("scanPhotos")
+  result := scanPhotoFiles(jpegRegexp(), photosPath)
+  log.Print(fmt.Sprint("done with ", cap(result)))
+  return result
 }
 
+func scanRaws(rawsPath string) []PhotoFile {
+  log.Print("scanRaws")
+  result := scanPhotoFiles(rawRegexp(), rawsPath)
+  log.Print(fmt.Sprint("done with ", cap(result)))
+  return result
+}
 
-func NewFileList() *FileList {
-  fmt.Println("File list START")
+func NewFileList(params *MatcherParams) *FileList {
+  log.Print("FileList start")
 
-  var photos = scanPhotoFiles(jpegRegexp(), "data")
-
-  return &FileList{Photos: photos}
+  return &FileList {
+    params: params,
+    Photos: scanPhotos(params.PhotosPath),
+    Raws: scanRaws(params.RawsPath) }
 }
