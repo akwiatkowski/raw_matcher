@@ -1,14 +1,17 @@
 package matcher
 
 import (
-  _ "fmt"
+  "fmt"
+  "log"
   "os"
   "regexp"
 )
 
 type PhotoFile struct {
   // https://stackoverflow.com/questions/24216510/empty-or-not-required-struct-fields-in-golang
+
   DateString string
+  RawFilenameString string
 
   Path string
   FileInfo os.FileInfo
@@ -18,15 +21,18 @@ func NewPhotoFile(path string, fileInfo os.FileInfo) PhotoFile {
   return PhotoFile {
     Path: path,
     FileInfo: fileInfo,
-    DateString: processDateFromPath(path) }
+    DateString: processDateFromPath(path),
+    RawFilenameString: processRawFilenameFromPath(path) }
 }
 
-// date should be somewhere in path
+// use date stored in path
+// it's faster that using exif data
 func processDateFromPath(path string) string {
   re := dateRegexp()
 	matched := re.FindAllString(path, -1)
   if len(matched) > 0 {
     lastElement := matched[len(matched) - 1]
+    log.Print(fmt.Sprint(" ", path, " -> date ", lastElement))
     return(lastElement)
   } else {
     return ""
@@ -39,6 +45,25 @@ func processDateFromPath(path string) string {
   return ""
 }
 
+func processRawFilenameFromPath(path string) string {
+  re := rawFilenameRegexp()
+	matched := re.FindAllStringSubmatch(path, -1)
+
+  if len(matched) > 0 {
+    lastElement := matched[len(matched) - 1][1]
+    log.Print(fmt.Sprint(" ", path, " -> filename ", lastElement))
+    return(lastElement)
+  } else {
+    return ""
+  }
+
+  return ""
+}
+
 func dateRegexp() *regexp.Regexp {
   return regexp.MustCompile(`\d{4}[-_]\d{2}[-_]\d{2}`)
+}
+
+func rawFilenameRegexp() *regexp.Regexp {
+  return regexp.MustCompile(`_?([^_./]+)\.\w{3,4}`)
 }
