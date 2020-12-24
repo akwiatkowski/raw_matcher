@@ -7,6 +7,7 @@ import (
   "regexp"
   "time"
   "strings"
+  "math"
 )
 
 type PhotoFile struct {
@@ -14,10 +15,36 @@ type PhotoFile struct {
 
   DateString string
   Date time.Time
-  RawFilenameString string
+  Filename string
 
   Path string
   FileInfo os.FileInfo
+}
+
+func (pf PhotoFile) dateName() string {
+  return fmt.Sprint(pf.DateString, ":", pf.Filename)
+}
+
+func (pf PhotoFile) equal(other PhotoFile) bool {
+  if pf.Filename != other.Filename {
+    return false
+  }
+
+  timeDiff := pf.Date.Sub(other.Date)
+  result := math.Abs(timeDiff.Hours()) < 96.0
+
+  log.Print(
+    fmt.Sprint(
+      "  ",
+      pf.dateName(),
+      " - ",
+      other.dateName(),
+      " timeDiff ",
+      timeDiff,
+      " result ",
+      result ))
+
+  return result
 }
 
 func NewPhotoFile(path string, fileInfo os.FileInfo) PhotoFile {
@@ -30,7 +57,7 @@ func NewPhotoFile(path string, fileInfo os.FileInfo) PhotoFile {
     FileInfo: fileInfo,
     DateString: dateString,
     Date: date,
-    RawFilenameString: filenameString }
+    Filename: filenameString }
 }
 
 // use date stored in path

@@ -18,7 +18,7 @@ type FileList struct {
 func (fl FileList) MatchRawForPhoto(photo PhotoFile) *PhotoFile {
   for i, raw := range fl.Raws {
     _ = i
-    if photo.RawFilenameString == raw.RawFilenameString {
+    if photo.equal(raw) {
       return &raw
     }
   }

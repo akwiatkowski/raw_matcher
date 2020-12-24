@@ -24,9 +24,9 @@ func (matcher Matcher) Match() {
     _ = i
     result := matcher.FileList.MatchRawForPhoto(photo)
     if result == nil {
-      log.Print(fmt.Sprint(" not found for ", photo.RawFilenameString))
+      log.Print(fmt.Sprint(" not found for ", photo.dateName()))
     } else {
-      log.Print(fmt.Sprint(" found ", photo.RawFilenameString, " -> ", result.RawFilenameString))
+      log.Print(fmt.Sprint(" found ", photo.dateName(), " -> ", result.dateName()))
     }
   }
 
