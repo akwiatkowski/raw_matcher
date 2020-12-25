@@ -21,7 +21,7 @@ func TestFilterPhotoFilenameA(t *testing.T) {
 		  result := matcher.FilterPhotoFilename(row.fileName)
 
       if result != row.output {
-			t.Errorf("FilterPhotoFilename was incorrect, got: %s, want: %s.", result, row.output)
+			t.Errorf("FilterPhotoFilename was incorrect, from %s, got %s, want: %s", row.fileName, result, row.output)
 		}
 	}
 }

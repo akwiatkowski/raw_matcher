@@ -118,18 +118,25 @@ func processDateFromPath(path string) string {
 func FilterPhotoFilename(basePath string) string {
   // https://regex101.com/r/w4gLE3/1
 
-  reRemoveTimedate := regexp.MustCompile(`^\d{4}\D+\d{2}\D+\d{2}\D+\d{2}\D+\d{2}\D(.+)`)
-  s := reRemoveTimedate.ReplaceAllString(basePath, `$1`)
+  // not sure if/how I can get strin from regexp
+  // `^\d{4}\D+\d{2}\D+\d{2}\D+\d{2}\D+\d{2}\D([^.]+)\..+`
 
-  log.Print(fmt.Sprint("Sanitized ", basePath, " to ", s))
+  // log.Print(fmt.Sprint("filter0 ", basePath))
 
-  // P8040699_01.jpg
-  // 8040699raw1.jpg
+  reRemoveExtension := regexp.MustCompile(`\.[^.]+`)
+  s := reRemoveExtension.ReplaceAllString(basePath, `$1`)
 
-  reRemoveSuffix := regexp.MustCompile(`^(\D*\d+)[^.]+`)
-  s = reRemoveSuffix.ReplaceAllString(basePath, `$1`)
+  // log.Print(fmt.Sprint("filter1 ", s))
 
-  log.Print(fmt.Sprint("Sanitized ", basePath, " to ", s))
+  reRemoveTimedate := regexp.MustCompile(`^\d{4}\D+\d{2}\D+\d{2}\D+\d{2}\D+\d{2}\D`)
+  s = reRemoveTimedate.ReplaceAllString(s, `$1`)
+
+  // log.Print(fmt.Sprint("filter2 ", s))
+
+  reRemoveSuffix := regexp.MustCompile(`^(\D*\d+)`)
+  s = reRemoveSuffix.FindString(s)
+
+  // log.Print(fmt.Sprint("filter3 ", s))
 
   return s
 }
