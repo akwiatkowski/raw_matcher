@@ -9,22 +9,28 @@ import (
 )
 
 func main() {
-	var path, output_script string
-	flag.StringVar(&path, "path", ".", "Input path")
-  flag.StringVar(&output_script, "output", "do.sh", "Output script")
+	var photosPath, rawsPath, outputPath string
+	flag.StringVar(&photosPath, "photos_path", "./", "Photos path")
+  flag.StringVar(&rawsPath, "raws_path", "./", "Raws path")
+  flag.StringVar(&outputPath, "output", "do.sh", "Output script")
   flag.Parse()
 
-	if len(path) == 0 {
-		fmt.Fprintf(os.Stderr, "You must specify input path")
+	if len(photosPath) == 0 {
+		fmt.Fprintf(os.Stderr, "You must specify photos path")
 	}
 
-	fmt.Println(fmt.Sprint("Input path: ", path))
-  fmt.Println(fmt.Sprint("Output script: ", output_script))
+  if len(rawsPath) == 0 {
+		fmt.Fprintf(os.Stderr, "You must specify raws path")
+	}
+
+  fmt.Println(fmt.Sprint("Photos path: ", photosPath))
+	fmt.Println(fmt.Sprint("Raws path: ", rawsPath))
+  fmt.Println(fmt.Sprint("Output script: ", outputPath))
 
   params := &matcher.MatcherParams{
-    PhotosPath: path,
-    RawsPath: path,
-    OutputScriptName: output_script }
+    PhotosPath: photosPath,
+    RawsPath: rawsPath,
+    OutputScriptName: outputPath }
 
   instance := matcher.New(params)
   instance.Match()
