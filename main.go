@@ -10,9 +10,15 @@ import (
 func main() {
   log.Print("Start")
 
+  photosPath := "data"
+  rawsPath := "data"
+
+  // photosPath = "/home/olek/projects/koty_polskie/input"
+  // rawsPath = "/media/silver"
+
   params := &matcher.MatcherParams{
-    PhotosPath: "/home/olek/projects/koty_polskie/input",
-    RawsPath: "/home/olek/projects/koty_polskie/input",
+    PhotosPath: photosPath,
+    RawsPath: rawsPath,
     OutputScriptName: "script.sh" }
 
   instance := matcher.New(params)

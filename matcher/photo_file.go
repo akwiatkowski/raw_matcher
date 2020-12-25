@@ -20,6 +20,9 @@ type PhotoFile struct {
 
   DateString string
   Date time.Time
+  // not filterd
+  RealFilename string
+  // filtered
   Filename string
 
   Path string
@@ -28,6 +31,19 @@ type PhotoFile struct {
   // maybe if I convert into pointer/reference that could work`
   // but I won't do that now
   // AssignedRaw *PhotoFile
+}
+
+func NewPhotoFile(path string, fileInfo os.FileInfo) PhotoFile {
+  dateString := processDateFromPath(path)
+  filenameString := processRawFilenameFromPath(path)
+  date := processDate(dateString)
+
+  return PhotoFile {
+    Path: path,
+    FileInfo: fileInfo,
+    DateString: dateString,
+    Date: date,
+    Filename: filenameString }
 }
 
 func (pf PhotoFile) DirPath() string {
@@ -55,8 +71,10 @@ func (pf PhotoFile) DateName() string {
   return fmt.Sprint(pf.DateString, ":", pf.Filename)
 }
 
-func (pf PhotoFile) equal(other PhotoFile) bool {
-  if pf.Filename != other.Filename {
+func (pf PhotoFile) Equal(other PhotoFile) bool {
+  // check substring because darktable added `_01` intead of overwrite
+  // and I quite often added `raw1` or `b` after
+  if strings.Contains(pf.Filename, other.Filename) == false {
     return false
   }
 
@@ -75,19 +93,6 @@ func (pf PhotoFile) equal(other PhotoFile) bool {
       result ))
 
   return result
-}
-
-func NewPhotoFile(path string, fileInfo os.FileInfo) PhotoFile {
-  dateString := processDateFromPath(path)
-  filenameString := processRawFilenameFromPath(path)
-  date := processDate(dateString)
-
-  return PhotoFile {
-    Path: path,
-    FileInfo: fileInfo,
-    DateString: dateString,
-    Date: date,
-    Filename: filenameString }
 }
 
 // use date stored in path
@@ -110,13 +115,37 @@ func processDateFromPath(path string) string {
   return ""
 }
 
-func processRawFilenameFromPath(path string) string {
+func FilterPhotoFilename(basePath string) string {
+  // https://regex101.com/r/w4gLE3/1
+
+  reRemoveTimedate := regexp.MustCompile(`^\d{4}\D+\d{2}\D+\d{2}\D+\d{2}\D+\d{2}\D(.+)`)
+  s := reRemoveTimedate.ReplaceAllString(basePath, `$1`)
+
+  log.Print(fmt.Sprint("Sanitized ", basePath, " to ", s))
+
+  // P8040699_01.jpg
+  // 8040699raw1.jpg
+
+  reRemoveSuffix := regexp.MustCompile(`^(\D*\d+)[^.]+`)
+  s = reRemoveSuffix.ReplaceAllString(basePath, `$1`)
+
+  log.Print(fmt.Sprint("Sanitized ", basePath, " to ", s))
+
+  return s
+}
+
+func processRawFilenameFromPath(fullPath string) string {
   re := rawFilenameRegexp()
-	matched := re.FindAllStringSubmatch(path, -1)
+  basePath := path.Base(fullPath)
+
+  // filter not needed suffixes
+  basePath = FilterPhotoFilename(basePath)
+
+	matched := re.FindAllStringSubmatch(basePath, -1)
 
   if len(matched) > 0 {
     lastElement := matched[len(matched) - 1][1]
-    log.Print(fmt.Sprint(" ", path, " -> filename ", lastElement))
+    log.Print(fmt.Sprint(" ", fullPath, " -> filename ", lastElement))
     return(lastElement)
   } else {
     return ""

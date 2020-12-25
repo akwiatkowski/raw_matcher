@@ -12,6 +12,10 @@ multiple of TB of data and I wanted to learn Go language.
 go run bin/raw_matcher.go -path ./data -output copy_script.sh
 ```
 
+## Tests
+
+`go test test/photo_file_test.go`
+
 # Links, notes
 
 https://blog.alexellis.io/5-keys-to-a-killer-go-cli/
