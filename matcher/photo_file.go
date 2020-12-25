@@ -20,8 +20,6 @@ type PhotoFile struct {
 
   DateString string
   Date time.Time
-  // not filterd
-  RealFilename string
   // filtered
   Filename string
 
@@ -108,10 +106,6 @@ func processDateFromPath(path string) string {
     return ""
   }
 
-	// for _, element := range submatchall {
-  //   fmt.Println(element)
-	// }
-
   return ""
 }
 
@@ -142,23 +136,18 @@ func FilterPhotoFilename(basePath string) string {
 }
 
 func processRawFilenameFromPath(fullPath string) string {
-  re := rawFilenameRegexp()
   basePath := path.Base(fullPath)
 
   // filter not needed suffixes
-  basePath = FilterPhotoFilename(basePath)
+  // and process to clear fileName w/o ext
+  basePathFiltered := FilterPhotoFilename(basePath)
 
-	matched := re.FindAllStringSubmatch(basePath, -1)
-
-  if len(matched) > 0 {
-    lastElement := matched[len(matched) - 1][1]
-    log.Print(fmt.Sprint(" ", fullPath, " -> filename ", lastElement))
-    return(lastElement)
+  if len(basePathFiltered) > 0 {
+    log.Print(fmt.Sprint(" ", fullPath, " -> filename ", basePathFiltered))
+    return(basePathFiltered)
   } else {
     return ""
   }
-
-  return ""
 }
 
 func processDate(dateString string) time.Time {
@@ -176,8 +165,4 @@ func processDate(dateString string) time.Time {
 
 func dateRegexp() *regexp.Regexp {
   return regexp.MustCompile(`\d{4}[-_]\d{2}[-_]\d{2}`)
-}
-
-func rawFilenameRegexp() *regexp.Regexp {
-  return regexp.MustCompile(`_?([^_./]+)\.\w{3,4}`)
 }

@@ -5,7 +5,7 @@ import (
   "raw_matcher/matcher"
 )
 
-func TestFilterPhotoFilenameA(t *testing.T) {
+func TestFilterPhotoFilename(t *testing.T) {
     testTable := []struct {
       fileName string
       output string
@@ -15,6 +15,8 @@ func TestFilterPhotoFilenameA(t *testing.T) {
       { "DSC05439-hdr.jpg", "DSC05439" },
       { "DSC05439b.jpg", "DSC05439" },
       { "2020_11_03__10_16_DSC05439.jpg", "DSC05439" },
+      { "2020_11_03__10_16_DSC05439_01.jpg", "DSC05439" },
+      { "2020_11_03__10_16_DSC05439_01a.jpg", "DSC05439" },
     }
 
     for _, row := range testTable {

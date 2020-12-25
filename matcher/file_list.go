@@ -6,6 +6,7 @@ import (
   "log"
   "path/filepath"
   "os"
+  "strings"
 )
 
 type FileList struct {
@@ -43,6 +44,18 @@ func rawRegexp() *regexp.Regexp {
   return r
 }
 
+func isNotBlacklisted(path string) bool {
+  if strings.Contains(path, "@eaDir") {
+    return false
+  }
+
+  if strings.Contains(path, "SYNOPHOTO_THUMB") {
+    return false
+  }
+
+  return true
+}
+
 func scanPhotoFiles(rxp *regexp.Regexp, path string) []PhotoFile {
   var photoFiles []PhotoFile
 
@@ -50,10 +63,19 @@ func scanPhotoFiles(rxp *regexp.Regexp, path string) []PhotoFile {
     if err == nil && rxp.MatchString(info.Name()) {
       // fmt.Println(info.Name())
 
-      photoFiles = append(photoFiles, NewPhotoFile(path, info))
+      // let's allow to ignore some of files
+      if isNotBlacklisted(path) {
+        photoFile := NewPhotoFile(path, info)
+
+        // ignore photoFile w/o proper name
+        if len(photoFile.Filename) > 3 {
+          photoFiles = append(photoFiles, photoFile)
+        }
+      }
     }
     return nil
   })
+  
   if e != nil {
       log.Fatal(e)
   }
