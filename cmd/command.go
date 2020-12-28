@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-  "raw_matcher/matcher"
+  "github.com/akwiatkowski/raw_matcher"
 )
 
 func main() {
@@ -27,11 +27,11 @@ func main() {
 	fmt.Println(fmt.Sprint("Raws path: ", rawsPath))
   fmt.Println(fmt.Sprint("Output script: ", outputPath))
 
-  params := &matcher.MatcherParams{
+  params := &raw_matcher.MatcherParams{
     PhotosPath: photosPath,
     RawsPath: rawsPath,
     OutputScriptName: outputPath }
 
-  instance := matcher.New(params)
+  instance := raw_matcher.New(params)
   instance.Match()
 }

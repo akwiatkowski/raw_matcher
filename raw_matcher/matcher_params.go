@@ -1,4 +1,4 @@
-package matcher
+package raw_matcher
 
 type MatcherParams struct {
   PhotosPath string

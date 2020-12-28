@@ -1,4 +1,4 @@
-package matcher
+package raw_matcher
 
 import (
   "fmt"
@@ -10,7 +10,7 @@ import (
 )
 
 type FileList struct {
-  params *MatcherParams
+  Params *MatcherParams
 
   Photos []PhotoFile
   Raws []PhotoFile
@@ -44,7 +44,7 @@ func rawRegexp() *regexp.Regexp {
   return r
 }
 
-func isNotBlacklisted(path string) bool {
+func IsNotBlacklisted(path string) bool {
   if strings.Contains(path, "@eaDir") {
     return false
   }
@@ -64,7 +64,7 @@ func scanPhotoFiles(rxp *regexp.Regexp, path string) []PhotoFile {
       // fmt.Println(info.Name())
 
       // let's allow to ignore some of files
-      if isNotBlacklisted(path) {
+      if IsNotBlacklisted(path) {
         photoFile := NewPhotoFile(path, info)
 
         // ignore photoFile w/o proper name
@@ -75,7 +75,7 @@ func scanPhotoFiles(rxp *regexp.Regexp, path string) []PhotoFile {
     }
     return nil
   })
-  
+
   if e != nil {
       log.Fatal(e)
   }
@@ -101,7 +101,7 @@ func NewFileList(params *MatcherParams) *FileList {
   log.Print("FileList start")
 
   return &FileList {
-    params: params,
+    Params: params,
     Photos: scanPhotos(params.PhotosPath),
     Raws: scanRaws(params.RawsPath) }
 }

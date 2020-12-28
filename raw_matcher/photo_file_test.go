@@ -1,8 +1,7 @@
-package matcher
+package raw_matcher
 
 import (
   "testing"
-  "raw_matcher/matcher"
 )
 
 func TestFilterPhotoFilename(t *testing.T) {
@@ -20,7 +19,7 @@ func TestFilterPhotoFilename(t *testing.T) {
     }
 
     for _, row := range testTable {
-		  result := matcher.FilterPhotoFilename(row.fileName)
+		  result := FilterPhotoFilename(row.fileName)
 
       if result != row.output {
 			t.Errorf("FilterPhotoFilename was incorrect, from %s, got %s, want: %s", row.fileName, result, row.output)

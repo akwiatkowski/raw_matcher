@@ -1,4 +1,4 @@
-package matcher
+package raw_matcher
 
 import (
   "fmt"
