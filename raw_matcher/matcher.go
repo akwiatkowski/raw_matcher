@@ -60,6 +60,11 @@ func (matcher Matcher) Match() {
 
   log.Print("End matching")
 
+  matcher.ScriptGenerator.GenerateStats(
+    len(matcher.MatchedPhotos),
+    len(matcher.NotFoundPhotos),
+    len(matcher.RawExistPhotos) )
+
   matcher.ScriptGenerator.GenerateForMatched(matcher.MatchedPhotos)
   matcher.ScriptGenerator.GenerateForNotFound(matcher.NotFoundPhotos)
   matcher.ScriptGenerator.GenerateForRawExist(matcher.RawExistPhotos)

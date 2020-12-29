@@ -23,9 +23,10 @@ type PhotoFile struct {
   // filtered
   Filename string
 
+
   Path string
   FileInfo os.FileInfo
-
+  Size int64
   // maybe if I convert into pointer/reference that could work`
   // but I won't do that now
   // AssignedRaw *PhotoFile
@@ -43,6 +44,7 @@ func NewPhotoFile(path string, fileInfo os.FileInfo) *PhotoFile {
   return &PhotoFile {
     Path: path,
     FileInfo: fileInfo,
+    Size: fileInfo.Size(),
     DateString: dateString,
     Date: date,
     Filename: filenameString }

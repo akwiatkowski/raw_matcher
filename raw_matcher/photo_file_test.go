@@ -23,6 +23,7 @@ func TestFilterPhotoFilename(t *testing.T) {
       { "2020_11_03__10_16_DSC05439.jpg", "DSC05439" },
       { "2020_11_03__10_16_DSC05439_01.jpg", "DSC05439" },
       { "2020_11_03__10_16_DSC05439_01a.jpg", "DSC05439" },
+      { "2020_12_06__14_42_DSC09064-denoise-denoise.jpg", "DSC09064" },
     }
 
     for _, row := range testTable {
