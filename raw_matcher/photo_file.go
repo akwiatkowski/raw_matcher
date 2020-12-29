@@ -19,7 +19,7 @@ type PhotoFile struct {
   // https://stackoverflow.com/questions/24216510/empty-or-not-required-struct-fields-in-golang
 
   DateString string
-  Date time.Time
+  Date *time.Time
   // filtered
   Filename string
 
@@ -31,12 +31,16 @@ type PhotoFile struct {
   // AssignedRaw *PhotoFile
 }
 
-func NewPhotoFile(path string, fileInfo os.FileInfo) PhotoFile {
+func NewPhotoFile(path string, fileInfo os.FileInfo) *PhotoFile {
   dateString := processDateFromPath(path)
   filenameString := processRawFilenameFromPath(path)
   date := processDate(dateString)
 
-  return PhotoFile {
+  if date == nil {
+    return nil
+  }
+
+  return &PhotoFile {
     Path: path,
     FileInfo: fileInfo,
     DateString: dateString,
@@ -76,7 +80,7 @@ func (pf PhotoFile) Equal(other PhotoFile) bool {
     return false
   }
 
-  timeDiff := pf.Date.Sub(other.Date)
+  timeDiff := pf.Date.Sub(*other.Date)
   result := math.Abs(timeDiff.Hours()) < MaxHourOffset
 
   log.Print(
@@ -150,17 +154,17 @@ func processRawFilenameFromPath(fullPath string) string {
   }
 }
 
-func processDate(dateString string) time.Time {
+func processDate(dateString string) *time.Time {
   layout := "2006_01_02"
   normalizedDateString := strings.ReplaceAll(dateString, "-", "_")
 
   t, err := time.Parse(layout, normalizedDateString)
 
   if err != nil {
-    log.Fatal(err)
+    return nil
   }
 
-  return t
+  return &t
 }
 
 func dateRegexp() *regexp.Regexp {

@@ -68,8 +68,8 @@ func scanPhotoFiles(rxp *regexp.Regexp, path string) []PhotoFile {
         photoFile := NewPhotoFile(path, info)
 
         // ignore photoFile w/o proper name
-        if len(photoFile.Filename) > 3 {
-          photoFiles = append(photoFiles, photoFile)
+        if photoFile != nil && len(photoFile.Filename) > 3 {
+          photoFiles = append(photoFiles, *photoFile)
         }
       }
     }

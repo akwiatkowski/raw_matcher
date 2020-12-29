@@ -9,13 +9,21 @@ multiple of TB of data and I wanted to learn Go language.
 ## How to use
 
 ```
-go run bin/raw_matcher.go -path ./data -output copy_script.sh
+go run cmd/command.go -path ./data -output copy_script.sh
 ```
 
 ## Tests
 
-`go test test/photo_file_test.go`
+`make test`
 
-# Links, notes
+## TODO
+
+1. Add missing test
+2. Convert to internal functions
+3. Separate
+4. Test for path w/o time
+5. Maybe pointers would be better
+
+### Links, notes
 
 https://blog.alexellis.io/5-keys-to-a-killer-go-cli/

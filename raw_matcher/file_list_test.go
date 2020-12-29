@@ -26,6 +26,10 @@ func TestMatchRawForPhoto(t *testing.T) {
   if result == nil {
     t.Errorf("MatchRawForPhoto %s should not be nil", result)
   }
+
+  if result.Filename != "IMG0001" {
+    t.Errorf("MatchRawForPhoto should find only photo")
+  }
 }
 
 func TestIsNotBlacklisted(t *testing.T) {

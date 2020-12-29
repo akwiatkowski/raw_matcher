@@ -4,6 +4,13 @@ import (
   "testing"
 )
 
+/*
+  TODO:
+    Equal
+    processDateFromPath
+    processDate
+*/
+
 func TestFilterPhotoFilename(t *testing.T) {
     testTable := []struct {
       fileName string
